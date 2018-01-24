@@ -18,15 +18,11 @@ beforeEach((done) => {
     TodoModel.remove({}).then(() => {
         return TodoModel.insertMany(todos);
     }).then(() => done());
-
-
 });
 
 describe('POST /todos', () => {
     it('should create a new todo', (done) => {
-
         var text = 'Test todo text';
-
         request(app)
             .post('/todos')
             .send({
@@ -40,7 +36,6 @@ describe('POST /todos', () => {
                 if (err) {
                     return done(err);
                 }
-
                 TodoModel.find({
                     text
                 }).then((todos) => {
@@ -60,7 +55,6 @@ describe('POST /todos', () => {
                 if (err) {
                     return done(err);
                 }
-
                 TodoModel.find().then((todos) => {
                     expect(todos.length).toBe(2);
                     done();
