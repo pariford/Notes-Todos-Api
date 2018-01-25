@@ -76,7 +76,25 @@ app.get('/todos/:id', (req, res) => {
     }, (e) => {
         res.status(400).send(e);
     });
+});
 
+app.delete('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send("Invalid ID");
+    }
+    TodoModel.findByIdAndRemove(id).then((todo) => {
+        if (todo) {
+            res.send({
+                todo
+            });
+            console.log("Record deleted")
+        } else {
+            res.status(404).send();
+        }
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
 app.listen(port, () => {
