@@ -90,7 +90,7 @@ app.delete('/todos/:id', (req, res) => {
             });
             console.log("Record deleted")
         } else {
-            res.status(404).send();
+            res.status(404).send("Record not found");
         }
     }, (e) => {
         res.status(400).send(e);
