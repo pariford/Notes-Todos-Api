@@ -1,5 +1,6 @@
 const jsonwebtoken = require('jsonwebtoken');
 const _ = require('lodash');
+const bcryptjs = require('bcryptjs');
 
 const {
     isEmail
@@ -92,6 +93,19 @@ UserSchema.statics.findByToken = function (token) {
     });
 };
 
+UserSchema.pre('save', function (next) {
+    var user = this;
+    if (user.isModified('password')) {
+        bcryptjs.genSalt(10, (err, salt) => {
+            bcryptjs.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
 var UserModel = mongoose.model('UserModel', UserSchema);
 
 module.exports = {

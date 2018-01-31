@@ -14,7 +14,7 @@ var authenticate = (req, res, next) => {
         res.token = token;
         next();
     }).catch((e) => {
-        res.status(401).send();
+        res.status(401).send({});
     });
 }
 

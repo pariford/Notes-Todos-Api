@@ -31,7 +31,6 @@ app.post('/todos', (req, res) => {
     var todo = new TodoModel({
         text: req.body.text
     });
-
     todo.save().then((doc) => {
         res.send(doc);
     }, (e) => {
@@ -50,7 +49,7 @@ app.post('/users', (req, res) => {
     }).catch((e) => {
         res.status(400).send(e);
     })
-})
+});
 
 app.get('/todos', (req, res) => {
     TodoModel.find().then((todos) => {
