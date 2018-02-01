@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('../../db/config');
 
 const {
     UserModel
@@ -13,7 +14,7 @@ const {
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
-
+console.log(process.env.JWT_SECRET);
 const users = [{
     _id: userOneId,
     userName: "Shivani Dole",
@@ -44,7 +45,7 @@ const todos = [{
     _id: new ObjectID(),
     text: 'First test todo',
     _creator: userOneId
-  }, {
+}, {
     _id: new ObjectID(),
     text: 'Second test todo',
     completed: true,
