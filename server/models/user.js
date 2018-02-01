@@ -69,6 +69,17 @@ UserSchema.methods.generateAuthToken = function () {
     });
 };
 
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+    return user.update({
+        $pull: {
+            tokens: {
+                token
+            }
+        }
+    });
+};
+
 //whatever you add to statics method turns into an model method as 
 //opposed to an instance method.
 UserSchema.statics.findByToken = function (token) {
@@ -92,6 +103,27 @@ UserSchema.statics.findByToken = function (token) {
         'tokens.access': 'auth'
     });
 };
+
+UserSchema.statics.findByCredentials = function (userName, email, password) {
+    var UserModel = this;
+    return UserModel.findOne({
+        email,
+        userName
+    }).then((user) => {
+        if (!user) {
+            return Promise.reject();
+        }
+        return new Promise((resolve, reject) => {
+            bcryptjs.compare(password, user.password, (err, res) => {
+                if (res) {
+                    resolve(user);
+                } else {
+                    reject();
+                }
+            });
+        });
+    });
+}
 
 UserSchema.pre('save', function (next) {
     var user = this;

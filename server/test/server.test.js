@@ -264,6 +264,8 @@ describe('POST /users', () => {
                     expect(user).toExist();
                     expect(user.password).toNotBe(password);
                     done();
+                }).catch((e) => {
+                    done(e);
                 });
             });
     });
@@ -287,7 +289,7 @@ describe('POST /users', () => {
         request(app)
             .post('/users')
             .send({
-                userName: "ABCD",
+                userName: users[1].userName,
                 email: "abc@gmail.com"
             })
             .expect(400)
@@ -297,3 +299,86 @@ describe('POST /users', () => {
             .end(done);
     });
 });
+
+describe('POST /users/login', () => {
+    it('should identify the user if available', (done) => {
+        var userName = users[0].userName;
+        var email = users[0].email;
+        var password = users[0].password;
+        request(app)
+            .post('/users/login')
+            .send({
+                userName,
+                email,
+                password
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toExist();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+                UserModel.findById(users[0]._id).then((user) => {
+                    expect(user.tokens[1]).toInclude({
+                        access: 'auth',
+                        token: res.headers['x-auth']
+                    });
+                    done();
+                }).catch((e) => {
+                    done(e);
+                });
+            });
+    });
+    it('should reject the invalid login', (done) => {
+        var userName = users[0].userName + '1';
+        var email = users[0].email;
+        var password = users[0].password;
+        request(app)
+            .post('/users/login')
+            .send({
+                userName,
+                email,
+                password
+            })
+            .expect(400)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toNotExist();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+                UserModel.findById(users[0]._id).then((user) => {
+                    expect(user.tokens.length).toBe(1);
+                    done();
+                }).catch((e) => {
+                    done(e);
+                });
+            });
+    });
+});
+
+describe('DELETE /users/me/token', () => {
+    it('should delete the token for the valid user token', (done) => {
+        request(app)
+            .delete('/users/me/token')
+            .set('x-auth', users[0].tokens[0].token)
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toNotExist();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+                UserModel.findById(users[0]._id).then((user) => {
+                    expect(user.tokens.length).toBe(0);
+                    done();
+                }).catch((e) => {
+                    done(e);
+                });
+            });
+    });
+})

@@ -16,8 +16,8 @@ const userTwoId = new ObjectID();
 
 const users = [{
     _id: userOneId,
-    userName: "ABC",
-    email: "abc@gmail.com",
+    userName: "Shivani Dole",
+    email: "shivanics.vit@gmail.com",
     password: "abc123!",
     tokens: [{
         access: 'auth',
