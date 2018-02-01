@@ -19,11 +19,11 @@ const {
 var data = {
     id: 10
 }
-var token = jsonwebtoken.sign(data, '123abc');
+var token = jsonwebtoken.sign(data, JWT_SECRET);
 console.log(token);
-var decoded = jsonwebtoken.verify(token, '123abc');
+var decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET);
 console.log('decoded', decoded);
-//jsonwebtoken.sign             //takes the object with the user id,add a secret, makes the hash and return a token
+//jsonwebtoken.sign             //takes the object with the user id(access also),add a secret, makes the hash and return a token
 //jsonwebtoken.verify           // takes the token and verify it
 
 var message = "This is my name";

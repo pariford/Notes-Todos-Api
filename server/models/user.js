@@ -59,7 +59,7 @@ UserSchema.methods.generateAuthToken = function () {
     var token = jsonwebtoken.sign({
         _id: user._id.toHexString(),
         access
-    }, 'abc123').toString();
+    }, process.env.JWT_SECRET).toString();
     user.tokens.push({
         access,
         token
@@ -87,7 +87,7 @@ UserSchema.statics.findByToken = function (token) {
     var UserModel = this;
     var decoded;
     try {
-        decoded = jsonwebtoken.verify(token, 'abc123')
+        decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET)
     } catch (error) {
         /* return new Promise((resolve, reject) => {
             reject();
